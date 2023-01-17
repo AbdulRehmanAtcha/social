@@ -9,7 +9,7 @@ if (window.location.href.split(":")[0] === "http") {
   baseURL = `http://localhost:5001`;
 }
 else {
-  baseURL = `https://spring-bud-pike-coat.cyclic.app`;
+  baseURL = `https://nervous-pocketbook-dog.cyclic.app`;
 }
 
 const Signup = () => {
