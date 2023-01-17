@@ -11,6 +11,7 @@ import {
 } from "bcrypt-inzi";
 
 
+
 const SECRET = process.env.SECRET || "topsecret";
 const app = express();
 const port = process.env.PORT || 5001;
@@ -477,8 +478,8 @@ app.put('/api/v1/product/:editId', async (req, res) => {
 
 const __dirname = path.resolve();
 
-app.use('/', express.static(path.join(__dirname, './jwt/build')))
-app.use('*', express.static(path.join(__dirname, './jwt/build')))
+app.use('/', express.static(path.join(__dirname, './web/build')))
+app.use('*', express.static(path.join(__dirname, './web/build')))
 
 
 
