@@ -63,6 +63,7 @@ let productSchema = new mongoose.Schema({
 });
 const productModel = mongoose.model("products", productSchema);
 
+
 let products = [];
 
 app.post("/api/v1/signup", (req, res) => {

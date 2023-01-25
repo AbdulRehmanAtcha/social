@@ -18,6 +18,8 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  // const [fName, setFname] = useState("");
+  // const [lName, setLname] = useState("");
 
   const emailHandler = (e) => {
     setEmail(e.target.value);
@@ -40,7 +42,8 @@ const Login = () => {
         type: "USER_LOGIN",
         payload: response.data.profile
       })
-      
+      // setFname(response.data.data.firstName)
+      // console.log(fName)
       // console.log(state)
       setLoading(false);
       console.log("Login Successful");

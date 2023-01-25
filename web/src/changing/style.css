@@ -1,0 +1,48 @@
+.change-main{
+    background-color: #354152;
+    min-height: 100vh;
+    min-width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: aliceblue
+}
+.box{
+    background-color: #2130468f;
+    height: 400px;
+    width: 400px;
+    border-radius: 10px;
+    box-shadow: 8px 33px 36px #202731;
+}
+.box .head-btn button{
+    margin: 12px 0px 0px 9px;
+    /* margin-left: 6px; */
+    height: 45px;
+    width: 120px;
+    background-color: darkgray;
+    border-radius: 11px;
+    /* color: white; */
+    border: none;
+}
+.box form{
+    height: 85%;
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    row-gap: 20px;
+}
+.box form input{
+    height: 50px;
+    width: 90%;
+    border-radius: 10px;
+}
+.box form button{
+    border: none;
+    height: 50px;
+    width: 90%;
+    border-radius: 8px;
+    background: black;
+}

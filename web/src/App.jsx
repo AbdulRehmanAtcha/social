@@ -9,6 +9,7 @@ import {
 import { GlobalContext } from './context/Context';
 import { useContext } from "react";
 import { useEffect } from 'react';
+import Change from './changing/Change';
 
 let baseURL = "";
 if (window.location.href.split(":")[0] === "http") {
@@ -20,7 +21,7 @@ else {
 
 function App() {
   let { state, dispatch } = useContext(GlobalContext);
-
+  console.log("State", state)
 
   useEffect(() => {
 
@@ -56,6 +57,7 @@ function App() {
             <Routes>
               <Route path='/' element={<Main />} />
               <Route path='/login' element={<Login />} />
+              <Route path='/changePassword' element={<Change/>}/>
               <Route path='*' element={<Main />} />
             </Routes>
             :

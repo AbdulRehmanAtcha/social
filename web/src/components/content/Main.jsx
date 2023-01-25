@@ -1,7 +1,8 @@
 import React from "react";
 import "./style.css";
-import moment from 'moment';
+import moment from "moment";
 import { useContext } from "react";
+import { Link } from 'react-router-dom';
 import { GlobalContext } from "../../context/Context";
 import { useState, useEffect } from "react";
 import axios from "axios";
@@ -26,9 +27,9 @@ const Main = () => {
 
   const AddHandler = (e) => {
     e.preventDefault();
-    console.log(description);
+    // console.log(description);
     var fileInput = document.getElementById("picture");
-    console.log("Post Piture: ", fileInput.files[0]);
+    // console.log("Post Piture: ", fileInput.files[0]);
     let formData = new FormData();
     formData.append("myFile", fileInput.files[0]);
     formData.append("description", addObj.description);
@@ -152,6 +153,7 @@ const Main = () => {
             />
           </div>
           <div className="nav-right">
+            <Link to='/changePassword'><button className="btn btn-success">Change Password</button></Link>
             <button
               type="button"
               onClick={logoutHandler}
@@ -159,6 +161,7 @@ const Main = () => {
             >
               Logout
             </button>
+
           </div>
         </nav>
       </header>
@@ -184,7 +187,6 @@ const Main = () => {
                   }}
                 ></textarea>
                 <br />
-
                 <input type="file" accept="image/*" id="picture" />
                 <br />
                 {/* <br /> */}
@@ -205,20 +207,30 @@ const Main = () => {
                     borderRadius: "8px",
                   }}
                 >
+                  {/* {state?.user?.firstName} {state?.user?.lastName} */}
                   <h2>
-                    {state?.user?.user?.firstName} {state?.user?.user?.lastName}
+                    {state?.user?.user?.firstName === undefined
+                      ? state?.user?.firstName
+                      : state?.user?.user?.firstName}{" "}
+                    {state?.user?.user?.lastName === undefined
+                      ? state?.user?.lastName
+                      : state?.user?.user?.lastName}
                   </h2>
                   <hr />
                   <p>{moment(eachProduct.createdOn).fromNow()}</p>
                   <hr />
                   <h2>{eachProduct.description}</h2>
-                  {((eachProduct.pictureURL) === undefined || (eachProduct.pictureURL) === null || (eachProduct.pictureURL) === "") ? null
-                  :
-                  <img src={eachProduct.pictureURL} style={{
-                    width: "100%",
-                    height: "300px"
-                  }} />
-                  }
+                  {eachProduct.pictureURL === undefined ||
+                  eachProduct.pictureURL === null ||
+                  eachProduct.pictureURL === "" ? null : (
+                    <img
+                      src={eachProduct.pictureURL}
+                      style={{
+                        width: "100%",
+                        height: "300px",
+                      }}
+                    />
+                  )}
                   <br />
                   <br />
                   <button
