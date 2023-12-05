@@ -45,14 +45,12 @@ const Signup = () => {
         withCredentials: true
       })
       setLoading(false)
-      console.log("Signup Successful");
       alert("Signup Successful")
 
     }
     catch (e) {
       setLoading(false);
       setLoading(false);
-      console.log("Error", e);
     }
   }
 

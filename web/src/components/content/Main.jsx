@@ -2,10 +2,14 @@ import React from "react";
 import "./style.css";
 import moment from "moment";
 import { useContext } from "react";
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 import { GlobalContext } from "../../context/Context";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { Button, Card, Modal, Upload, message } from "antd";
+import Meta from "antd/es/card/Meta";
+import { UploadOutlined } from '@ant-design/icons';
+
 let baseURL = "";
 if (window.location.href.split(":")[0] === "http") {
   baseURL = `http://localhost:5001`;
@@ -20,16 +24,46 @@ const Main = () => {
   const [editId, setEditId] = useState(null);
   const [editDesc, setEditDesc] = useState("");
   const [loading, setLoading] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+  const [isModal2Open, setIsModal2Open] = useState(false);
+  const handleCancel2 = () => {
+    setIsModal2Open(false);
+  };
+
+  const showModal2 = () => {
+    setIsModal2Open(true);
+  };
 
   const addObj = {
     description: description,
   };
+  let imageUrl;
+  const props = {
+    name: 'file',
+    action: 'https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188',
+    headers: {
+      authorization: 'authorization-text',
+    },
+    onChange(info) {
+      if (info.file.status !== 'uploading') {
+        console.log(info.file, info.fileList);
+      }
+      if (info.file.status === 'done') {
+        imageUrl = info.file.response.url;
+        console.log(imageUrl, "IMG")
+        message.success(`${info.file.name} file uploaded successfully`);
+      } else if (info.file.status === 'error') {
+        message.error(`${info.file.name} file upload failed.`);
+      }
+    },
+  };
 
   const AddHandler = (e) => {
     e.preventDefault();
-    // console.log(description);
     var fileInput = document.getElementById("picture");
-    // console.log("Post Piture: ", fileInput.files[0]);
     let formData = new FormData();
     formData.append("myFile", fileInput.files[0]);
     formData.append("description", addObj.description);
@@ -43,12 +77,10 @@ const Main = () => {
     })
       .then((res) => {
         setLoading(false);
-        console.log("response: ", res.data);
         allPosts();
       })
       .catch((err) => {
         setLoading(false);
-        console.log("error: ", err);
       });
 
     // axios
@@ -70,17 +102,14 @@ const Main = () => {
     try {
       setLoading(false);
       const response = await axios.get(`${baseURL}/api/v1/products`);
-      console.log("Got All Products", response.data.data);
       setProducts(response.data.data);
     } catch (error) {
       setLoading(false);
-      console.log("Error", error);
     }
   };
 
   useEffect(() => {
     allPosts();
-    // console.log(state.user)
   }, []);
 
   const deletProduct = async (id) => {
@@ -89,11 +118,9 @@ const Main = () => {
     try {
       setLoading(false);
       const response = await axios.delete(`${baseURL}/api/v1/product/${id}`);
-      console.log("Got All Products", response.data.data);
       allPosts();
     } catch (error) {
       setLoading(false);
-      console.log("Error", error);
     }
   };
 
@@ -104,6 +131,7 @@ const Main = () => {
   const updateHandler = (event) => {
     event.preventDefault();
     let newDesc = editDesc;
+    setIsModalOpen(false);
     setLoading(true);
     axios
       .put(`${baseURL}/api/v1/product/${editId}`, {
@@ -112,194 +140,102 @@ const Main = () => {
       .then(
         (response) => {
           setLoading(false);
-
-          console.log(response);
           allPosts();
         },
         (error) => {
           setLoading(false);
-
-          console.log(error);
         }
       );
   };
-  const editHandler = async (e) => {};
+  const editHandler = (e) => {
+    setIsModalOpen(true);
+  };
 
   const logoutHandler = async () => {
     try {
       let response = await axios.post(`${baseURL}/api/v1/logout`, {
         withCredentials: true,
       });
-      console.log("res", response);
       dispatch({
         type: "USER_LOGOUT",
       });
-    } catch (e) {
-      console.log("e: ", e);
-    }
+    } catch (e) {}
   };
 
   return (
     <>
-      <header>
-        <nav>
-          <div className="nav-left">
-            <h2>New Social</h2>
-          </div>
-          <div className="nav-mid">
-            <input
-              type="text"
-              placeholder="Search For Friend, Post or any Video"
-            />
-          </div>
-          <div className="nav-right">
-            <Link to='/changePassword'><button className="btn btn-success">Change Password</button></Link>
-            <button
-              type="button"
-              onClick={logoutHandler}
-              className="btn btn btn-danger btn-sm"
-            >
+      <body>
+        <header>
+          <h2>New Social</h2>
+          <div style={{ display: "flex", gap: "8px" }}>
+            <Button type="primary" onClick={showModal2}>
+              Add Post
+            </Button>
+            <Button type="primary" danger>
               Logout
-            </button>
-
+            </Button>
           </div>
-        </nav>
-      </header>
-      {loading === true ? (
-        <div className="loader">
-          <div className="spinner-grow text-secondary" role="status">
-            <span className="visually-hidden">Loading...</span>
-          </div>
-        </div>
-      ) : (
-        <div className="main">
-          <div className="main-left"></div>
-          <div className="main-mid">
-            <div className="head-box">
-              <form onSubmit={AddHandler}>
-                <textarea
-                  cols="80"
-                  rows="4"
-                  required
-                  minLength="3"
-                  onChange={(e) => {
-                    setDescription(e.target.value);
-                  }}
-                ></textarea>
-                <br />
-                <input type="file" accept="image/*" id="picture" />
-                <br />
-                {/* <br /> */}
-                <button type="submit">Post</button>
-              </form>
-            </div>
-            <br />
-            <br />
-            <div className="all-posts">
-              {products.map((eachProduct, i) => (
-                <div
-                  className="post"
-                  key={i}
-                  style={{
-                    backgroundColor: "white",
-                    width: "730px",
-                    minHeight: "75px",
-                    borderRadius: "8px",
+        </header>
+        <div className="all-posts">
+          {products.map((eachPost, index) => (
+            <div className={eachPost?.pictureURL ? "each-post" : "each-post2"}>
+              {eachPost?.pictureURL && (
+                <>
+                  <img src={eachPost?.pictureURL} alt="" />
+                  <hr />
+                </>
+              )}
+              <h2>
+                {state?.user?.user?.firstName} {state?.user?.user?.lastName}
+              </h2>
+              <hr />
+              <p>{eachPost?.description}</p>
+              <div style={{ display: "flex", columnGap: "10px" }}>
+                <Button
+                  type="primary"
+                  onClick={() => {
+                    editHandler(setEditId(eachPost._id));
                   }}
                 >
-                  {/* {state?.user?.firstName} {state?.user?.lastName} */}
-                  <h2>
-                    {state?.user?.user?.firstName === undefined
-                      ? state?.user?.firstName
-                      : state?.user?.user?.firstName}{" "}
-                    {state?.user?.user?.lastName === undefined
-                      ? state?.user?.lastName
-                      : state?.user?.user?.lastName}
-                  </h2>
-                  <hr />
-                  <p>{moment(eachProduct.createdOn).fromNow()}</p>
-                  <hr />
-                  <h2>{eachProduct.description}</h2>
-                  {eachProduct.pictureURL === undefined ||
-                  eachProduct.pictureURL === null ||
-                  eachProduct.pictureURL === "" ? null : (
-                    <img
-                      src={eachProduct.pictureURL}
-                      style={{
-                        width: "100%",
-                        height: "300px",
-                      }}
-                    />
-                  )}
-                  <br />
-                  <br />
-                  <button
-                    type="button"
-                    className="btn btn-primary"
-                    data-bs-toggle="modal"
-                    data-bs-target="#staticBackdrop"
-                    onClick={() => {
-                      editHandler(setEditId(eachProduct._id));
-                    }}
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => {
-                      deletProduct(eachProduct._id);
-                    }}
-                  >
-                    Delete
-                  </button>
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="main-right"></div>
-          <div
-            className="modal fade"
-            id="staticBackdrop"
-            data-bs-backdrop="static"
-            data-bs-keyboard="false"
-            tabIndex="-1"
-            aria-labelledby="staticBackdropLabel"
-            aria-hidden="true"
-          >
-            <div className="modal-dialog">
-              <div className="modal-content">
-                <div className="modal-header">
-                  <h5 className="modal-title" id="staticBackdropLabel">
-                    Edit Form
-                  </h5>
-                  <button
-                    type="button"
-                    className="btn-close"
-                    data-bs-dismiss="modal"
-                    aria-label="Close"
-                  ></button>
-                </div>
-                <div className="modal-body">
-                  <form onSubmit={updateHandler}>
-                    <textarea
-                      cols="60"
-                      rows="4 "
-                      onChange={editDescHandler}
-                    ></textarea>
-                    <br />
-                    <button
-                      data-bs-dismiss="modal"
-                      className="btn btn-dark"
-                      type="submit"
-                    >
-                      Update
-                    </button>
-                  </form>
-                </div>
+                  Edit
+                </Button>
+
+                <Button
+                  type="primary"
+                  danger
+                  onClick={() => {
+                    deletProduct(eachPost._id);
+                  }}
+                >
+                  Delete
+                </Button>
               </div>
             </div>
-          </div>
+          ))}
         </div>
-      )}
+        <Modal
+          title="Edit"
+          open={isModalOpen}
+          onOk={updateHandler}
+          onCancel={handleCancel}
+        >
+          <input
+            type="text"
+            placeholder="New Description"
+            style={{ width: "100%" }}
+            onChange={editDescHandler}
+          />
+        </Modal>
+        <Modal title="Basic Modal" open={isModal2Open} onCancel={handleCancel2}>
+          <input
+            type="text"
+            placeholder="New Description"
+            style={{ width: "100%" }}
+            onChange={editDescHandler}
+          />
+          <input type="file" name="" id="" />
+        </Modal>
+      </body>
     </>
   );
 };

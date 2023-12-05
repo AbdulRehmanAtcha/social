@@ -20,7 +20,7 @@ const MongoDBURI =
 const storageConfig = multer.diskStorage({
   destination: "./uploads/",
   filename: function (req, file, cb) {
-    console.log("mul-file: ", file);
+    ("mul-file: ", file);
     cb(null, `${new Date().getTime()}-${file.originalname}`);
   },
 });
@@ -87,11 +87,11 @@ app.post("/api/v1/signup", (req, res) => {
   // check if user already exist // query email user
   userModel.findOne({ email: body.email }, (err, user) => {
     if (!err) {
-      console.log("user: ", user);
+      ("user: ", user);
 
       if (user) {
         // user already exist
-        console.log("user already exist: ", user);
+        ("user already exist: ", user);
         res.status(400).send({
           message: "user already exist,, please try a different email",
         });
@@ -110,10 +110,10 @@ app.post("/api/v1/signup", (req, res) => {
             },
             (err, result) => {
               if (!err) {
-                console.log("data saved: ", result);
+                ("data saved: ", result);
                 res.status(201).send({ message: "user is created" });
               } else {
-                console.log("db error: ", err);
+                ("db error: ", err);
                 res.status(500).send({ message: "internal server error" });
               }
             }
@@ -121,7 +121,7 @@ app.post("/api/v1/signup", (req, res) => {
         });
       }
     } else {
-      console.log("db error: ", err);
+      ("db error: ", err);
       res.status(500).send({ message: "db error in query" });
       return;
     }
@@ -150,12 +150,12 @@ app.post("/api/v1/login", (req, res) => {
     "email password firstName lastName",
     (err, data) => {
       if (!err) {
-        console.log("data: ", data);
+        ("data: ", data);
 
         if (data) {
           // user found
           varifyHash(body.password, data.password).then((isMatched) => {
-            console.log("isMatched: ", isMatched);
+            ("isMatched: ", isMatched);
 
             if (isMatched) {
               const token = jwt.sign(
@@ -168,7 +168,7 @@ app.post("/api/v1/login", (req, res) => {
                 SECRET
               );
 
-              console.log("token: ", token);
+              ("token: ", token);
 
               res.cookie("Token", token, {
                 maxAge: 86_400_000,
@@ -189,19 +189,19 @@ app.post("/api/v1/login", (req, res) => {
               });
               return;
             } else {
-              console.log("password did not match");
+              ("password did not match");
               res.status(401).send({ message: "Incorrect email or password" });
               return;
             }
           });
         } else {
           // user not already exist
-          console.log("user not found");
+          ("user not found");
           res.status(401).send({ message: "Incorrect email or password" });
           return;
         }
       } else {
-        console.log("db error: ", err);
+        ("db error: ", err);
         res.status(500).send({ message: "login failed, please try later" });
         return;
       }
@@ -221,7 +221,7 @@ app.post("/api/v1/logout", (req, res) => {
 });
 
 app.use("/api/v1", (req, res, next) => {
-  console.log("req.cookies: ", req.cookies);
+  ("req.cookies: ", req.cookies);
 
   if (!req?.cookies?.Token) {
     res.status(401).send({
@@ -232,7 +232,7 @@ app.use("/api/v1", (req, res, next) => {
 
   jwt.verify(req.cookies.Token, SECRET, function (err, decodedData) {
     if (!err) {
-      console.log("decodedData: ", decodedData);
+      ("decodedData: ", decodedData);
 
       const nowDate = new Date().getTime() / 1000;
 
@@ -246,7 +246,7 @@ app.use("/api/v1", (req, res, next) => {
         });
         res.send({ message: "token expired" });
       } else {
-        console.log("token approved");
+        ("token approved");
 
         req.token = decodedData;
         next();
@@ -278,7 +278,7 @@ const gettingUser = async (req, res) => {
       res.send({ user });
     }
   } catch (error) {
-    console.log("Error", error);
+    ("Error", error);
     res.status(500);
     res.send({
       message: "Error",
@@ -311,7 +311,7 @@ app.post("/api/v1/changePassword", async (req, res) => {
     });
     return;
   } catch (error) {
-    console.log("error: ", error);
+    ("error: ", error);
     res.status(500).send();
   }
 });
@@ -340,16 +340,16 @@ app.post("/api/v1/product", uploadMiddleware.any(), (req, res) => {
   //     }
   // )
   const token = jwt.decode(req.cookies.Token);
-  console.log("Token", token);
+  ("Token", token);
 
-  console.log("req.body: ", req.body);
-  //   console.log("req.body: ", JSON.parse(req.body.myDetails));
-  console.log("req.files: ", req.files);
+  ("req.body: ", req.body);
+  //   ("req.body: ", JSON.parse(req.body.myDetails));
+  ("req.files: ", req.files);
 
-  console.log("uploaded file name: ", req.files[0].originalname);
-  console.log("file type: ", req.files[0].mimetype);
-  console.log("file name in server folders: ", req.files[0].filename);
-  console.log("file path in server folders: ", req.files[0].path);
+  ("uploaded file name: ", req.files[0].originalname);
+  ("file type: ", req.files[0].mimetype);
+  ("file name in server folders: ", req.files[0].filename);
+  ("file path in server folders: ", req.files[0].path);
 
   bucket.upload(
     req.files[0].path,
@@ -365,7 +365,7 @@ app.post("/api/v1/product", uploadMiddleware.any(), (req, res) => {
           })
           .then((urlData, err) => {
             if (!err) {
-              console.log("public downloadable url: ", urlData[0]);
+              ("public downloadable url: ", urlData[0]);
               // res.send("Ok");
               productModel.create(
                 {
@@ -375,13 +375,13 @@ app.post("/api/v1/product", uploadMiddleware.any(), (req, res) => {
                 },
                 (err, saved) => {
                   if (!err) {
-                    console.log(saved);
+                    (saved);
 
                     res.send({
                       message: "your product is saved",
                     });
                   } else {
-                    console.log("Not Gone");
+                    ("Not Gone");
                     res.status(500).send({
                       message: "server error",
                     });
@@ -391,7 +391,7 @@ app.post("/api/v1/product", uploadMiddleware.any(), (req, res) => {
             }
           });
       } else {
-        console.log("err: ", err);
+        ("err: ", err);
         res.status(500).send();
       }
     }
@@ -417,7 +417,7 @@ app.get("/api/v1/products", async (req, res) => {
       data: data,
     });
   } catch (e) {
-    console.log(e);
+    (e);
     res.status(500).send({
       message: "server error",
     });
@@ -450,7 +450,7 @@ app.delete("/api/v1/product/:id", (req, res) => {
   const id = req.params.id;
 
   productModel.deleteOne({ _id: id }, (err, deletedData) => {
-    console.log("deleted: ", deletedData);
+    ("deleted: ", deletedData);
     if (!err) {
       if (deletedData.deletedCount !== 0) {
         res.send({
@@ -492,7 +492,7 @@ app.put("/api/v1/product/:editId", async (req, res) => {
       )
       .exec();
 
-    console.log("updated: ", data);
+    ("updated: ", data);
 
     res.send({
       message: "product modified successfully",
@@ -510,29 +510,29 @@ app.use("/", express.static(path.join(__dirname, "./web/build")));
 app.use("*", express.static(path.join(__dirname, "./web/build")));
 
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
+  (`Example app listening on port ${port}`);
 });
 
 mongoose.connect(MongoDBURI);
 
 mongoose.connection.on("connected", function () {
-  console.log("Mongoose is connected");
+  ("Mongoose is connected");
 });
 
 mongoose.connection.on("disconnected", function () {
-  console.log("Mongoose is disconnected");
+  ("Mongoose is disconnected");
   process.exit(1);
 });
 
 mongoose.connection.on("error", function (err) {
-  console.log("Mongoose connection error: ", err);
+  ("Mongoose connection error: ", err);
   process.exit(1);
 });
 
 process.on("SIGINT", function () {
-  console.log("app is terminating");
+  ("app is terminating");
   mongoose.connection.close(function () {
-    console.log("Mongoose default connection closed");
+    ("Mongoose default connection closed");
     process.exit(0);
   });
 });

@@ -46,13 +46,11 @@ const Login = () => {
       // console.log(fName)
       // console.log(state)
       setLoading(false);
-      console.log("Login Successful");
       // alert("Login Successful");
     }
     catch (e) {
       setLoading(false);
 
-      console.log("Error", e);
     }
   }
   return (

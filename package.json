@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "antd": "^5.12.1",
     "bcrypt-inzi": "^1.0.7",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",

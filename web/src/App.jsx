@@ -21,7 +21,7 @@ else {
 
 function App() {
   let { state, dispatch } = useContext(GlobalContext);
-  console.log("State", state)
+
 
   useEffect(() => {
 
@@ -34,11 +34,10 @@ function App() {
           type: "USER_LOGIN",
           payload: response.data
         })
-        console.log("Yes Login");
+        
       }
       catch (error) {
-        console.log(error);
-        console.log("no Login");
+
         dispatch({
           type: 'USER_LOGOUT'
         })
