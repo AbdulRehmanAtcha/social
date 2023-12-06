@@ -30,11 +30,6 @@ app.use(
   cors({
     origin: [
       "http://localhost:3000",
-      //   "http://localhost:3000/signup",
-      //   "http://localhost:3000/login",
-      //   "https://spring-bud-pike-coat.cyclic.app",
-      //   "https://spring-bud-pike-coat.cyclic.app/signup",
-      //   "https://spring-bud-pike-coat.cyclic.app/login",
       "*",
     ],
     credentials: true,
@@ -331,16 +326,8 @@ app.post("/api/v1/product", uploadMiddleware.any(), (req, res) => {
   }
 
   const token = jwt.decode(req.cookies.Token);
-  console.log("Token", token);
-
-  console.log("req.body: ", req.body);
 
   if (!req.files || req.files.length === 0) {
-    // No files uploaded, handle accordingly (e.g., proceed with text-only data)
-    console.log("No files uploaded");
-
-    // Your logic for text-only data goes here
-    // For example, save text data to a database
     productModel.create(
       {
         description: body.description,
@@ -348,12 +335,10 @@ app.post("/api/v1/product", uploadMiddleware.any(), (req, res) => {
       },
       (err, saved) => {
         if (!err) {
-          console.log(saved);
           res.send({
             message: "Text-only data processed successfully",
           });
         } else {
-          console.log("Not Gone");
           res.status(500).send({
             message: "Server error",
           });
@@ -362,16 +347,6 @@ app.post("/api/v1/product", uploadMiddleware.any(), (req, res) => {
     );
     return;
   }
-
-  console.log("req.files: ", req.files);
-
-  console.log("uploaded file name: ", req.files[0].originalname);
-  console.log("file type: ", req.files[0].mimetype);
-  console.log("file name in server folders: ", req.files[0].filename);
-  console.log("file path in server folders: ", req.files[0].path);
-
-  // Your file upload and processing logic goes here
-  // For example, save the file to a cloud storage service like AWS S3 or Google Cloud Storage
   bucket.upload(
     req.files[0].path,
     {
@@ -386,9 +361,6 @@ app.post("/api/v1/product", uploadMiddleware.any(), (req, res) => {
           })
           .then((urlData, err) => {
             if (!err) {
-              console.log("public downloadable url: ", urlData[0]);
-              // Now, you have the public URL of the uploaded file (urlData[0])
-              // You can save this URL along with text data to the database
               productModel.create(
                 {
                   description: body.description,
@@ -397,12 +369,10 @@ app.post("/api/v1/product", uploadMiddleware.any(), (req, res) => {
                 },
                 (err, saved) => {
                   if (!err) {
-                    console.log(saved);
                     res.send({
                       message: "File and text data processed successfully",
                     });
                   } else {
-                    console.log("Not Gone");
                     res.status(500).send({
                       message: "Server error",
                     });
@@ -412,7 +382,6 @@ app.post("/api/v1/product", uploadMiddleware.any(), (req, res) => {
             }
           });
       } else {
-        console.log("err: ", err);
         res.status(500).send({
           message: "File upload error",
         });
@@ -426,7 +395,6 @@ app.get("/api/v1/products", async (req, res) => {
   try {
     const data = await productModel
       .find({ owner: userId })
-      // .select({description: 0, name: 0}) // projection
       .sort({ _id: -1 })
       .exec();
 
@@ -535,16 +503,6 @@ mongoose.connect(MongoDBURI);
 
 mongoose.connection.on("connected", function () {
   ("Mongoose is connected");
-});
-
-mongoose.connection.on("disconnected", function () {
-  ("Mongoose is disconnected");
-  process.exit(1);
-});
-
-mongoose.connection.on("error", function (err) {
-  ("Mongoose connection error: ", err);
-  process.exit(1);
 });
 
 process.on("SIGINT", function () {
