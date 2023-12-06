@@ -324,33 +324,54 @@ app.post("/api/v1/product", uploadMiddleware.any(), (req, res) => {
   const body = req.body;
 
   if (!body.description) {
-    res.status(404);
-    res.send({
-      message: "All Inputs Are Required",
+    res.status(400).send({
+      message: "Description is required",
     });
     return;
   }
-  // products.push(
-  //     {
-  //         id: new Date().getTime(),
-  //         name: body.name,
-  //         price: body.price,
-  //         description: body.description
 
-  //     }
-  // )
   const token = jwt.decode(req.cookies.Token);
-  ("Token", token);
+  console.log("Token", token);
 
-  ("req.body: ", req.body);
-  //   ("req.body: ", JSON.parse(req.body.myDetails));
-  ("req.files: ", req.files);
+  console.log("req.body: ", req.body);
 
-  ("uploaded file name: ", req.files[0].originalname);
-  ("file type: ", req.files[0].mimetype);
-  ("file name in server folders: ", req.files[0].filename);
-  ("file path in server folders: ", req.files[0].path);
+  if (!req.files || req.files.length === 0) {
+    // No files uploaded, handle accordingly (e.g., proceed with text-only data)
+    console.log("No files uploaded");
 
+    // Your logic for text-only data goes here
+    // For example, save text data to a database
+    productModel.create(
+      {
+        description: body.description,
+        owner: new mongoose.Types.ObjectId(token._id),
+      },
+      (err, saved) => {
+        if (!err) {
+          console.log(saved);
+          res.send({
+            message: "Text-only data processed successfully",
+          });
+        } else {
+          console.log("Not Gone");
+          res.status(500).send({
+            message: "Server error",
+          });
+        }
+      }
+    );
+    return;
+  }
+
+  console.log("req.files: ", req.files);
+
+  console.log("uploaded file name: ", req.files[0].originalname);
+  console.log("file type: ", req.files[0].mimetype);
+  console.log("file name in server folders: ", req.files[0].filename);
+  console.log("file path in server folders: ", req.files[0].path);
+
+  // Your file upload and processing logic goes here
+  // For example, save the file to a cloud storage service like AWS S3 or Google Cloud Storage
   bucket.upload(
     req.files[0].path,
     {
@@ -365,8 +386,9 @@ app.post("/api/v1/product", uploadMiddleware.any(), (req, res) => {
           })
           .then((urlData, err) => {
             if (!err) {
-              ("public downloadable url: ", urlData[0]);
-              // res.send("Ok");
+              console.log("public downloadable url: ", urlData[0]);
+              // Now, you have the public URL of the uploaded file (urlData[0])
+              // You can save this URL along with text data to the database
               productModel.create(
                 {
                   description: body.description,
@@ -375,15 +397,14 @@ app.post("/api/v1/product", uploadMiddleware.any(), (req, res) => {
                 },
                 (err, saved) => {
                   if (!err) {
-                    (saved);
-
+                    console.log(saved);
                     res.send({
-                      message: "your product is saved",
+                      message: "File and text data processed successfully",
                     });
                   } else {
-                    ("Not Gone");
+                    console.log("Not Gone");
                     res.status(500).send({
-                      message: "server error",
+                      message: "Server error",
                     });
                   }
                 }
@@ -391,16 +412,13 @@ app.post("/api/v1/product", uploadMiddleware.any(), (req, res) => {
             }
           });
       } else {
-        ("err: ", err);
-        res.status(500).send();
+        console.log("err: ", err);
+        res.status(500).send({
+          message: "File upload error",
+        });
       }
     }
   );
-
-  // res.send({
-  //     message: "Product Added Successfully!",
-  //     data: products
-  // });
 });
 
 app.get("/api/v1/products", async (req, res) => {

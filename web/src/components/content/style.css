@@ -5,12 +5,16 @@ body {
   background-color: #252525;
 }
 header {
-  /* height: 30px; */
+  height: 40px;
   padding: 8px;
   background-color: #474747;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  position: fixed;
+  width: 100%; /* Ensure the header spans the full width of the viewport */
+  top: 0; /* Stick the header to the top of the viewport */
+  z-index: 1000; /* Adjust z-index as needed to ensure it's above other content */
 }
 header h2 {
   color: white;
@@ -51,8 +55,89 @@ header h2 {
   padding: 10px;
 }
 
+/* YourFormStyles.css */
+
+.form-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-top: 10px;
+  margin-top: 60px;
+}
+
+.your-form {
+  min-width: 399px;
+  max-width: 400px;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-left: 10px;
+}
+
+label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+textarea {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  resize: vertical;
+}
+
+.image-input-label {
+  display: block;
+  margin-bottom: 16px;
+  cursor: pointer;
+}
+
+.image-input-label span {
+  display: inline-block;
+  padding: 8px;
+  background-color: #3498db;
+  color: #fff;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 98%;
+  text-align: center;
+}
+
+/* Styling the file input (hidden) */
+.image-input-label input {
+  display: none;
+}
+
+button {
+  background-color: #27ae60;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  width: 98%;
+  text-align: center;
+}
+
+button:hover {
+  background-color: #219653;
+}
+.form-parent{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 @media screen and (max-width:520px){
     .each-post, .each-post2{
         width: 90vw;
+    }
+    .your-form{
+      width: 80vw !important;
     }
 }

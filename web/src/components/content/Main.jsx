@@ -7,8 +7,7 @@ import { GlobalContext } from "../../context/Context";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { Button, Card, Modal, Upload, message } from "antd";
-import Meta from "antd/es/card/Meta";
-import { UploadOutlined } from '@ant-design/icons';
+import { Dna } from "react-loader-spinner";
 
 let baseURL = "";
 if (window.location.href.split(":")[0] === "http") {
@@ -37,37 +36,24 @@ const Main = () => {
     setIsModal2Open(true);
   };
 
+  const handleOk = () => {
+    console.log("heyyy");
+  };
+
   const addObj = {
     description: description,
-  };
-  let imageUrl;
-  const props = {
-    name: 'file',
-    action: 'https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188',
-    headers: {
-      authorization: 'authorization-text',
-    },
-    onChange(info) {
-      if (info.file.status !== 'uploading') {
-        console.log(info.file, info.fileList);
-      }
-      if (info.file.status === 'done') {
-        imageUrl = info.file.response.url;
-        console.log(imageUrl, "IMG")
-        message.success(`${info.file.name} file uploaded successfully`);
-      } else if (info.file.status === 'error') {
-        message.error(`${info.file.name} file upload failed.`);
-      }
-    },
   };
 
   const AddHandler = (e) => {
     e.preventDefault();
-    var fileInput = document.getElementById("picture");
+    var fileInput = document.getElementById("imageInput");
     let formData = new FormData();
     formData.append("myFile", fileInput.files[0]);
     formData.append("description", addObj.description);
     setLoading(true);
+    console.log(addObj, "FORM");
+    setDescription("");
+    fileInput.value = "";
 
     axios({
       method: "post",
@@ -82,18 +68,6 @@ const Main = () => {
       .catch((err) => {
         setLoading(false);
       });
-
-    // axios
-    //   .post(`${baseURL}/api/v1/product`, addObj)
-    //   .then((response) => {
-    //     setLoading(false);
-    //     console.log("response: ", response.data);
-    //     allPosts();
-    //   })
-    //   .catch((err) => {
-    //     setLoading(false);
-    //     console.log("error: ", err);
-    //   });
   };
 
   const allPosts = async () => {
@@ -168,73 +142,122 @@ const Main = () => {
         <header>
           <h2>New Social</h2>
           <div style={{ display: "flex", gap: "8px" }}>
-            <Button type="primary" onClick={showModal2}>
-              Add Post
-            </Button>
-            <Button type="primary" danger>
+            <Button type="primary" danger onClick={logoutHandler}>
               Logout
             </Button>
           </div>
         </header>
-        <div className="all-posts">
-          {products.map((eachPost, index) => (
-            <div className={eachPost?.pictureURL ? "each-post" : "each-post2"}>
-              {eachPost?.pictureURL && (
-                <>
-                  <img src={eachPost?.pictureURL} alt="" />
-                  <hr />
-                </>
-              )}
-              <h2>
-                {state?.user?.user?.firstName} {state?.user?.user?.lastName}
-              </h2>
-              <hr />
-              <p>{eachPost?.description}</p>
-              <div style={{ display: "flex", columnGap: "10px" }}>
-                <Button
-                  type="primary"
-                  onClick={() => {
-                    editHandler(setEditId(eachPost._id));
+        {loading ? (
+          <div
+            style={{
+              minHeight: "100vh",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Dna
+              visible={true}
+              height="80"
+              width="80"
+              ariaLabel="dna-loading"
+              wrapperStyle={{}}
+              wrapperClass="dna-wrapper"
+            />
+          </div>
+        ) : (
+          <>
+            <div className="form-container" onSubmit={AddHandler}>
+              <form className="your-form">
+                <label htmlFor="textArea">Your Message:</label>
+                <textarea
+                  id="textArea"
+                  name="message"
+                  rows="4"
+                  placeholder="Type your message here..."
+                  onChange={(e) => {
+                    setDescription(e.target.value);
                   }}
-                >
-                  Edit
-                </Button>
+                  value={description}
+                />
 
-                <Button
-                  type="primary"
-                  danger
-                  onClick={() => {
-                    deletProduct(eachPost._id);
-                  }}
-                >
-                  Delete
-                </Button>
-              </div>
+                <label htmlFor="imageInput" className="image-input-label">
+                  <span>Choose an Image</span>
+                  <input
+                    type="file"
+                    id="imageInput"
+                    name="imageInput"
+                    accept="image/*"
+                  />
+                </label>
+
+                <button type="submit">Submit</button>
+              </form>
             </div>
-          ))}
-        </div>
-        <Modal
-          title="Edit"
-          open={isModalOpen}
-          onOk={updateHandler}
-          onCancel={handleCancel}
-        >
-          <input
-            type="text"
-            placeholder="New Description"
-            style={{ width: "100%" }}
-            onChange={editDescHandler}
-          />
-        </Modal>
-        <Modal title="Basic Modal" open={isModal2Open} onCancel={handleCancel2}>
-          <input
-            type="text"
-            placeholder="New Description"
-            style={{ width: "100%" }}
-            onChange={editDescHandler}
-          />
-          <input type="file" name="" id="" />
-        </Modal>
+            <div className="all-posts">
+              {products.map((eachPost, index) => (
+                <div
+                  className={eachPost?.pictureURL ? "each-post" : "each-post2"}
+                >
+                  {eachPost?.pictureURL && (
+                    <>
+                      <img src={eachPost?.pictureURL} alt="" />
+                      <hr />
+                    </>
+                  )}
+                  <h2>
+                    {state?.user?.user?.firstName === undefined
+                      ? state?.user?.firstName
+                      : state?.user?.user?.firstName}
+                    {state?.user?.user?.lastName === undefined
+                      ? state?.user?.lastName
+                      : state?.user?.user?.lastName}
+                  </h2>
+                  <hr />
+                  <p>{eachPost?.description}</p>
+                  <div style={{ display: "flex", columnGap: "10px" }}>
+                    <Button
+                      type="primary"
+                      onClick={() => {
+                        editHandler(setEditId(eachPost._id));
+                      }}
+                    >
+                      Edit
+                    </Button>
+
+                    <Button
+                      type="primary"
+                      danger
+                      onClick={() => {
+                        deletProduct(eachPost._id);
+                      }}
+                    >
+                      Delete
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <Modal
+              title="Edit"
+              open={isModalOpen}
+              onOk={updateHandler}
+              onCancel={handleCancel}
+              footer={[
+                <Button key="ok" type="primary" onClick={updateHandler}>
+                  OK
+                </Button>,
+              ]}
+            >
+              <input
+                type="text"
+                placeholder="New Description"
+                style={{ width: "100%" }}
+                onChange={editDescHandler}
+              />
+            </Modal>
+          </>
+        )}
       </body>
     </>
   );
