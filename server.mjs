@@ -15,13 +15,12 @@ const MongoDBURI =
   process.env.MongoDBURI ||
   "mongodb+srv://abdul:abdulpassword@cluster0.zcczzqa.mongodb.net/test?retryWrites=true&w=majority";
 
-const storageConfig = multer.diskStorage({
-  destination: "./uploads/",
-  filename: function (req, file, cb) {
-    ("mul-file: ", file);
-    cb(null, `${new Date().getTime()}-${file.originalname}`);
-  },
-});
+  const storageConfig = multer.diskStorage({
+    destination: "./temp_uploads/",  // Use a temporary directory
+    filename: function (req, file, cb) {
+      cb(null, `${new Date().getTime()}-${file.originalname}`);
+    },
+  });
 var uploadMiddleware = multer({ storage: storageConfig });
 
 app.use(
