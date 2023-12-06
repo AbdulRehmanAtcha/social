@@ -8,7 +8,6 @@ import cookieParser from "cookie-parser";
 import { stringToHash, varifyHash } from "bcrypt-inzi";
 import multer from "multer";
 import bucket from "./firebaseAdmin/index.mjs";
-const minifyHTML = require('express-minify-html');
 const SECRET = process.env.SECRET || "topsecret";
 const app = express();
 const port = process.env.PORT || 5001;
@@ -513,15 +512,4 @@ process.on("SIGINT", function () {
 });
 
 
-app.use(minifyHTML({
-  override:      true,
-  exception_url: false,
-  htmlMinifier: {
-    removeComments:            true,
-    collapseWhitespace:        true,
-    collapseBooleanAttributes: true,
-    removeAttributeQuotes:     true,
-    removeEmptyAttributes:     true,
-    minifyJS:                  true,
-  },
-}));
+
