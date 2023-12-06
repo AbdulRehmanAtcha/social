@@ -16,7 +16,7 @@ if (window.location.href.split(":")[0] === "http") {
   baseURL = `http://localhost:5001`;
 }
 else {
-  baseURL = `https://ill-frog-polo-shirt.cyclic.app`;
+  baseURL = `https://tiny-pink-parrot-tux.cyclic.app/`;
 }
 
 function App() {
