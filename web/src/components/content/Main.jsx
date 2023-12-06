@@ -1,12 +1,10 @@
 import React from "react";
 import "./style.css";
-import moment from "moment";
 import { useContext } from "react";
-import { Link } from "react-router-dom";
 import { GlobalContext } from "../../context/Context";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { Button, Card, Modal, Upload, message } from "antd";
+import { Button, Modal,  } from "antd";
 import { Dna } from "react-loader-spinner";
 
 let baseURL = "";
@@ -26,18 +24,6 @@ const Main = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const handleCancel = () => {
     setIsModalOpen(false);
-  };
-  const [isModal2Open, setIsModal2Open] = useState(false);
-  const handleCancel2 = () => {
-    setIsModal2Open(false);
-  };
-
-  const showModal2 = () => {
-    setIsModal2Open(true);
-  };
-
-  const handleOk = () => {
-    console.log("heyyy");
   };
 
   const addObj = {
