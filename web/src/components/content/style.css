@@ -37,6 +37,7 @@ header h2 {
 .each-post {
   min-height: 500px !important;
   min-width: 400px !important;
+  max-width: 400px !important;
   background-color: rgb(255, 255, 255) !important;
   border-radius: 10px;
   box-shadow: -5px 3px 22px 0px rgba(141, 140, 140, 0.62);
@@ -47,6 +48,7 @@ header h2 {
 .each-post2 {
   min-height: 200px !important;
   min-width: 400px !important;
+  max-width: 400px !important;
   background-color: rgb(255, 255, 255) !important;
   border-radius: 10px;
   box-shadow: -5px 3px 22px 0px rgba(141, 140, 140, 0.62);
@@ -140,4 +142,9 @@ button:hover {
     .your-form{
       width: 80vw !important;
     }
+}
+@media screen and (max-width:410px){
+  .your-form{
+    margin-left: 80px;
+  }
 }

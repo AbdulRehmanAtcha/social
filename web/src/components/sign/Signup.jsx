@@ -3,6 +3,7 @@ import './style.css';
 import { NavLink } from 'react-router-dom';
 import { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 let baseURL = "";
 if (window.location.href.split(":")[0] === "http") {
@@ -18,6 +19,7 @@ const Signup = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
 
   const fNameHandler = (e) => {
@@ -48,9 +50,10 @@ const Signup = () => {
       alert("Signup Successful")
 
     }
-    catch (e) {
+    catch (error) {
       setLoading(false);
-      setLoading(false);
+      {error.response.data.message && alert(error.response.data.message)}
+
     }
   }
 

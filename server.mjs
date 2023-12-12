@@ -85,7 +85,7 @@ app.post("/api/v1/signup", (req, res) => {
         // user already exist
         ("user already exist: ", user);
         res.status(400).send({
-          message: "user already exist,, please try a different email",
+          message: "Email Already Registered",
         });
         return;
       } else {
@@ -501,6 +501,7 @@ mongoose.connect(MongoDBURI);
 mongoose.connection.on("connected", function () {
   ("Mongoose is connected");
 });
+mongoose.set('strictQuery', false);
 
 process.on("SIGINT", function () {
   ("app is terminating");
